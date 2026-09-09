@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="ItauChallenge.Api/ItauChallenge.Api.csproj" />
+  <Project Path="ItauChallenge.Application/ItauChallenge.Application.csproj" />
+  <Project Path="ItauChallenge.Domain/ItauChallenge.Domain.csproj" />
+  <Project Path="ItauChallenge.Infra/ItauChallenge.Infra.csproj" Id="9746932a-bdf0-41d7-874b-d549fce57f02" />
+</Solution>
