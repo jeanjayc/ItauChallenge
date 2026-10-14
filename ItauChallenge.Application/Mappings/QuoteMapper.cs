@@ -11,8 +11,8 @@ public static class QuoteMapper
         {
             AtivoId = request.AtivoId,
             PrecoUnit = request.PrecoUnit,
-            DataHora = request.DataHora ?? DateTime.UtcNow,
-            IsActive = request.IsActive ?? true,
+            DataHora = request.DataHora,
+            IsActive = request.IsActive,
             CreatedAt = DateTime.UtcNow
         };
     }

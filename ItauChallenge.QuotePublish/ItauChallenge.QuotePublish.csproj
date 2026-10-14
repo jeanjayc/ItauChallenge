@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>dotnet-ItauChallenge.QuotePublish-474c705c-74eb-4e37-8ae5-7f403ef76823</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Confluent.Kafka" Version="2.15.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.12" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ItauChallenge.Application\ItauChallenge.Application.csproj" />
+    <ProjectReference Include="..\ItauChallenge.Domain\ItauChallenge.Domain.csproj" />
+    <ProjectReference Include="..\ItauChallenge.Infra\ItauChallenge.Infra.csproj" />
+    <ProjectReference Include="..\ItauChallenge.Messaging\ItauChallenge.Messaging.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Messaging\" />
+    <Folder Include="Models\" />
+  </ItemGroup>
+</Project>

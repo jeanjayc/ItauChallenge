@@ -1,5 +1,6 @@
 using ItauChallenge.Application.Dtos.Operations;
 using ItauChallenge.Application.Mappings;
+using ItauChallenge.Domain.Models;
 using ItauChallenge.Infra.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -66,5 +67,32 @@ public class OperationService : IOperationService
         OperationMapper.ApplyUpdate(entity, request);
         await _db.SaveChangesAsync();
         return true;
+    }
+
+    public decimal CalculateWeightedAveragePrice(int assetId)
+    {
+        if(assetId <= 0)
+        {
+            throw new ArgumentException("Invalid asset ID.");
+        }
+
+        var operations = _db.Operacoes
+            .Where(a => a.AtivoId == assetId && a.TipoOperacao == OperationType.Buy)
+            .ToList();
+
+        if (operations == null || !operations.Any())
+        {
+            throw new InvalidOperationException("No buy operations found for the specified asset.");
+        }
+
+        var totalQuantity = operations!.Sum(o => o.QuantidadeB3);
+        var totalCost = operations!.Sum(o => o.QuantidadeB3 * o.PrecoUnit);
+
+        if (totalQuantity <= 0)
+        {
+            throw new InvalidOperationException("Invalid total quantity.");
+        }
+
+        return totalCost / totalQuantity;
     }
 }

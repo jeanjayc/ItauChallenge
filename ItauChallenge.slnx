@@ -1,6 +1,10 @@
 <Solution>
   <Project Path="ItauChallenge.Api/ItauChallenge.Api.csproj" />
+  <Project Path="ItauChallenge.Application.Tests/ItauChallenge.Application.Tests.csproj" />
   <Project Path="ItauChallenge.Application/ItauChallenge.Application.csproj" />
   <Project Path="ItauChallenge.Domain/ItauChallenge.Domain.csproj" />
   <Project Path="ItauChallenge.Infra/ItauChallenge.Infra.csproj" Id="9746932a-bdf0-41d7-874b-d549fce57f02" />
+  <Project Path="ItauChallenge.Messaging/ItauChallenge.Messaging.csproj" />
+  <Project Path="ItauChallenge.QuoteConsumer/ItauChallenge.QuoteConsumer.csproj" Id="72dacecf-d5bf-41b3-aa3e-7b10f7bcc35c" />
+  <Project Path="ItauChallenge.QuotePublish/ItauChallenge.QuotePublish.csproj" Id="fa1fd7ee-58e0-4104-bf3f-cce55ff065b1" />
 </Solution>

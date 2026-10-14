@@ -1,6 +1,5 @@
-using ItauChallenge.Application.Dtos.FinancialAssets;
-using ItauChallenge.Application.Mappings;
 using ItauChallenge.Application.Repositories;
+using ItauChallenge.Domain.Models;
 using ItauChallenge.Infra.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,12 +14,11 @@ public class FinancialAssetRepository : IFinancialAssetRepository
         _db = db;
     }
 
-    public async Task<FinancialAssetResponse> CreateAsync(CreateFinancialAssetRequest request)
+    public async Task<Ativo> CreateAsync(Ativo request)
     {
-        var entity = FinancialAssetMapper.ToEntity(request);
-        _db.Ativos.Add(entity);
+        _db.Ativos.Add(request);
         await _db.SaveChangesAsync();
-        return FinancialAssetMapper.ToResponse(entity);
+        return request;
     }
 
     public async Task<bool> DeleteAsync(int id)
@@ -33,24 +31,28 @@ public class FinancialAssetRepository : IFinancialAssetRepository
         return true;
     }
 
-    public async Task<IEnumerable<FinancialAssetResponse>> GetAllAsync()
+    public async Task<IEnumerable<Ativo>> GetAllAsync()
     {
         var entities = await _db.Ativos.ToListAsync();
-        return entities.Select(FinancialAssetMapper.ToResponse);
+        return entities;
     }
 
-    public async Task<FinancialAssetResponse?> GetByIdAsync(int id)
+    public async Task<Ativo?> GetByIdAsync(int id)
     {
         var entity = await _db.Ativos.FindAsync(id);
-        return entity == null ? null : FinancialAssetMapper.ToResponse(entity);
+        return entity;
     }
 
-    public async Task<bool> UpdateAsync(int id, UpdateFinancialAssetRequest request)
+    public async Task<bool> UpdateAsync(int id, Ativo request)
     {
         var entity = await _db.Ativos.FindAsync(id);
         if (entity == null) return false;
 
-        FinancialAssetMapper.ApplyUpdate(entity, request);
+        entity.Codigo = request.Codigo;
+        entity.Nome = request.Nome;
+        entity.IsActive = request.IsActive;
+        entity.CreatedAt = entity.CreatedAt ?? DateTime.UtcNow;
+
         await _db.SaveChangesAsync();
         return true;
     }

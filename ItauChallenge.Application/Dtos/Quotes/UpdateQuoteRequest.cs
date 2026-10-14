@@ -7,7 +7,8 @@ public class UpdateQuoteRequest
     [Required]
     public int AtivoId { get; set; }
 
-    public decimal? PrecoUnit { get; set; }
-    public DateTime? DataHora { get; set; }
-    public bool? IsActive { get; set; }
+    public decimal PrecoUnit { get; set; }
+    public DateTime DataHora { get; set; }
+    public DateTime UpdatedAt { get; set; }
+    public bool IsActive { get; set; }
 }

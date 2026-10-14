@@ -1,8 +1,13 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace ItauChallenge.Domain.Models
 {
     public enum OperationType
     {
-        Buy = 0,
-        Sell = 1
+        [Display(Name = "Compra")]
+        Buy = 1,
+
+        [Display(Name = "Venda")]
+        Sell = 2
     }
 }

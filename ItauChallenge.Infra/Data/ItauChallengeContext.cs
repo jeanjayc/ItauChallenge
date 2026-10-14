@@ -25,7 +25,12 @@ public partial class ItauChallengeContext : DbContext
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=itau_challenge;Username=postgres;Password=71321787");
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=itau_challenge;Username=postgres;Password=71321787");
+        }
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

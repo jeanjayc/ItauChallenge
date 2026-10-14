@@ -1,6 +1,5 @@
-using ItauChallenge.Application.Dtos.Investors;
-using ItauChallenge.Application.Mappings;
 using ItauChallenge.Application.Repositories;
+using ItauChallenge.Domain.Models;
 using ItauChallenge.Infra.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,12 +14,11 @@ public class InvestorRepository : IInvestorRepository
         _db = db;
     }
 
-    public async Task<InvestorResponse> CreateAsync(CreateInvestorRequest request)
+    public async Task<Usuario> CreateAsync(Usuario request)
     {
-        var entity = InvestorMapper.ToEntity(request);
-        _db.Usuarios.Add(entity);
+        _db.Usuarios.Add(request);
         await _db.SaveChangesAsync();
-        return InvestorMapper.ToResponse(entity);
+        return request;
     }
 
     public async Task<bool> DeleteAsync(int id)
@@ -33,24 +31,30 @@ public class InvestorRepository : IInvestorRepository
         return true;
     }
 
-    public async Task<IEnumerable<InvestorResponse>> GetAllAsync()
+    public async Task<IEnumerable<Usuario>> GetAllAsync()
     {
         var entities = await _db.Usuarios.ToListAsync();
-        return entities.Select(InvestorMapper.ToResponse);
+        return entities;
     }
 
-    public async Task<InvestorResponse?> GetByIdAsync(int id)
+    public async Task<Usuario?> GetByIdAsync(int id)
     {
         var entity = await _db.Usuarios.FindAsync(id);
-        return entity == null ? null : InvestorMapper.ToResponse(entity);
+        return entity;
     }
 
-    public async Task<bool> UpdateAsync(int id, UpdateInvestorRequest request)
+    public async Task<bool> UpdateAsync(int id, Usuario request)
     {
         var entity = await _db.Usuarios.FindAsync(id);
         if (entity == null) return false;
 
-        InvestorMapper.ApplyUpdate(entity, request);
+        // Apply incoming domain values to tracked entity
+        entity.Nome = request.Nome;
+        entity.Email = request.Email;
+        entity.Corretagem = request.Corretagem;
+        entity.IsActive = request.IsActive;
+        entity.UpdateAt = DateTime.UtcNow;
+
         await _db.SaveChangesAsync();
         return true;
     }

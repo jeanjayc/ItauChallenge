@@ -1,5 +1,3 @@
-using ItauChallenge.Application.Dtos.Operations;
-using ItauChallenge.Application.Mappings;
 using ItauChallenge.Application.Repositories;
 using ItauChallenge.Domain.Models;
 using ItauChallenge.Infra.Data;
@@ -16,18 +14,17 @@ public class OperationRepository : IOperationRepository
         _db = db;
     }
 
-    public async Task<OperationResponse> CreateAsync(CreateOperationRequest request)
+    public async Task<Operacoes> CreateAsync(Operacoes request)
     {
-        var entity = OperationMapper.ToEntity(request);
-        _db.Operacoes.Add(entity);
+        _db.Operacoes.Add(request);
         await _db.SaveChangesAsync();
 
         var created = await _db.Operacoes
             .Include(o => o.Ativo)
             .Include(o => o.Usuario)
-            .FirstAsync(o => o.Id == entity.Id);
+            .FirstAsync(o => o.Id == request.Id);
 
-        return OperationMapper.ToResponse(created);
+        return created;
     }
 
     public async Task<bool> DeleteAsync(int id)
@@ -40,32 +37,41 @@ public class OperationRepository : IOperationRepository
         return true;
     }
 
-    public async Task<IEnumerable<OperationResponse>> GetAllAsync()
+    public async Task<IEnumerable<Operacoes>> GetAllAsync()
     {
         var entities = await _db.Operacoes
             .Include(o => o.Ativo)
             .Include(o => o.Usuario)
             .ToListAsync();
 
-        return entities.Select(OperationMapper.ToResponse);
+        return entities;
     }
 
-    public async Task<OperationResponse?> GetByIdAsync(int id)
+    public async Task<Operacoes?> GetByIdAsync(int id)
     {
         var entity = await _db.Operacoes
             .Include(o => o.Ativo)
             .Include(o => o.Usuario)
             .FirstOrDefaultAsync(o => o.Id == id);
 
-        return entity == null ? null : OperationMapper.ToResponse(entity);
+        return entity;
     }
 
-    public async Task<bool> UpdateAsync(int id, UpdateOperationRequest request)
+    public async Task<bool> UpdateAsync(int id, Operacoes request)
     {
         var entity = await _db.Operacoes.FindAsync(id);
         if (entity == null) return false;
 
-        OperationMapper.ApplyUpdate(entity, request);
+        entity.AtivoId = request.AtivoId;
+        entity.UsuarioId = request.UsuarioId;
+        entity.QuantidadeB3 = request.QuantidadeB3;
+        entity.QuantidadeGlobal = request.QuantidadeGlobal;
+        entity.PrecoUnit = request.PrecoUnit;
+        entity.TipoOperacao = request.TipoOperacao;
+        entity.Corretagem = request.Corretagem;
+        entity.DataHora = request.DataHora;
+        entity.CreatedAt = entity.CreatedAt ?? DateTime.UtcNow;
+
         await _db.SaveChangesAsync();
         return true;
     }

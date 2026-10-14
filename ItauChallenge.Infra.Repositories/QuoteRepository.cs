@@ -1,6 +1,5 @@
-using ItauChallenge.Application.Dtos.Quotes;
-using ItauChallenge.Application.Mappings;
 using ItauChallenge.Application.Repositories;
+using ItauChallenge.Domain.Models;
 using ItauChallenge.Infra.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,17 +14,16 @@ public class QuoteRepository : IQuoteRepository
         _db = db;
     }
 
-    public async Task<QuoteResponse> CreateAsync(CreateQuoteRequest request)
+    public async Task<Cotacao> CreateAsync(Cotacao request)
     {
-        var entity = QuoteMapper.ToEntity(request);
-        _db.Cotacaos.Add(entity);
+        _db.Cotacaos.Add(request);
         await _db.SaveChangesAsync();
 
         var created = await _db.Cotacaos
             .Include(c => c.Ativo)
-            .FirstAsync(c => c.Id == entity.Id);
+            .FirstAsync(c => c.Id == request.Id);
 
-        return QuoteMapper.ToResponse(created);
+        return created;
     }
 
     public async Task<bool> DeleteAsync(int id)
@@ -38,30 +36,34 @@ public class QuoteRepository : IQuoteRepository
         return true;
     }
 
-    public async Task<IEnumerable<QuoteResponse>> GetAllAsync()
+    public async Task<IEnumerable<Cotacao>> GetAllAsync()
     {
         var entities = await _db.Cotacaos
             .Include(c => c.Ativo)
             .ToListAsync();
 
-        return entities.Select(QuoteMapper.ToResponse);
+        return entities;
     }
 
-    public async Task<QuoteResponse?> GetByIdAsync(int id)
+    public async Task<Cotacao?> GetByIdAsync(int id)
     {
         var entity = await _db.Cotacaos
             .Include(c => c.Ativo)
             .FirstOrDefaultAsync(c => c.Id == id);
 
-        return entity == null ? null : QuoteMapper.ToResponse(entity);
+        return entity;
     }
 
-    public async Task<bool> UpdateAsync(int id, UpdateQuoteRequest request)
+    public async Task<bool> UpdateAsync(int id, Cotacao request)
     {
         var entity = await _db.Cotacaos.FindAsync(id);
         if (entity == null) return false;
 
-        QuoteMapper.ApplyUpdate(entity, request);
+        entity.PrecoUnit = request.PrecoUnit;
+        entity.DataHora = request.DataHora;
+        entity.IsActive = request.IsActive;
+        entity.CreatedAt = entity.CreatedAt ?? DateTime.UtcNow;
+
         await _db.SaveChangesAsync();
         return true;
     }
